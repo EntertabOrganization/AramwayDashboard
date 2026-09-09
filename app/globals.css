@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #cc9138;
+  --color-primary-dark: #a8752a;
+  --color-secondary: #7e5820;
+  --color-ink: #0c0903;
+  --color-muted: #666666;
+  --color-cream: #fbf7f4;
+  --color-cream-deep: #f5ebd6;
+  --color-cream-soft: #f9f3e7;
+  --color-border: #eae7e4;
+  --color-surface: #fefcfa;
+  --color-gold-light: #e1bf8b;
+  --color-brown: #5a4539;
+  --color-accent-light: #c89d60;
+
+  --font-heading: var(--font-ubuntu-sans), "Segoe UI", sans-serif;
+  --font-body: var(--font-montserrat), "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
