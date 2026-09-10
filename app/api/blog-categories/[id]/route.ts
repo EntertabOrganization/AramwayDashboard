@@ -1,36 +1,24 @@
-import { NextResponse } from "next/server";
-import { BlogCategoriesStore } from "@/lib/mock-data";
-import { pickDefined } from "@/lib/api-utils";
+import { backendFetch, proxyResponse } from "@/lib/backend";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-export async function GET(_request: Request, { params }: RouteParams) {
+export async function GET(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const category = BlogCategoriesStore.get(id);
-  if (!category) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(category);
+  const backendRes = await backendFetch(request, `/blog-categories/${id}`);
+  return proxyResponse(backendRes);
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const body = await request.json().catch(() => null);
-  if (!body) return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-
-  const patch = pickDefined({
-    name: body.name,
-    slug: body.slug,
-    description: body.description,
-  });
-  const updated = BlogCategoriesStore.update(id, patch);
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(updated);
+  const body = await request.text();
+  const backendRes = await backendFetch(request, `/blog-categories/${id}`, { method: "PATCH", body });
+  return proxyResponse(backendRes);
 }
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
+export async function DELETE(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const removed = BlogCategoriesStore.remove(id);
-  if (!removed) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ ok: true });
+  const backendRes = await backendFetch(request, `/blog-categories/${id}`, { method: "DELETE" });
+  return proxyResponse(backendRes);
 }

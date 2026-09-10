@@ -1,43 +1,24 @@
-import { NextResponse } from "next/server";
-import { ConsultationsStore } from "@/lib/mock-data";
-import { pickDefined } from "@/lib/api-utils";
+import { backendFetch, proxyResponse } from "@/lib/backend";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-export async function GET(_request: Request, { params }: RouteParams) {
+export async function GET(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const consultation = ConsultationsStore.get(id);
-  if (!consultation) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(consultation);
+  const backendRes = await backendFetch(request, `/consultations/${id}`);
+  return proxyResponse(backendRes);
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const body = await request.json().catch(() => null);
-  if (!body) return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-
-  const patch = pickDefined({
-    name: body.name,
-    company: body.company,
-    email: body.email,
-    phone: body.phone,
-    country: body.country,
-    service: body.service,
-    notes: body.notes,
-    date: body.date,
-    time: body.time,
-    status: body.status,
-  });
-  const updated = ConsultationsStore.update(id, patch);
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(updated);
+  const body = await request.text();
+  const backendRes = await backendFetch(request, `/consultations/${id}`, { method: "PATCH", body });
+  return proxyResponse(backendRes);
 }
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
+export async function DELETE(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const removed = ConsultationsStore.remove(id);
-  if (!removed) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ ok: true });
+  const backendRes = await backendFetch(request, `/consultations/${id}`, { method: "DELETE" });
+  return proxyResponse(backendRes);
 }

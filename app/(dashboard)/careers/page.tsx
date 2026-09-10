@@ -18,8 +18,6 @@ interface CareerFormState {
   expectedSalary: string;
   position: string;
   startDate: string;
-  resumeUrl: string;
-  coverLetterUrl: string;
 }
 
 const emptyForm: CareerFormState = {
@@ -33,8 +31,6 @@ const emptyForm: CareerFormState = {
   expectedSalary: "",
   position: "",
   startDate: "",
-  resumeUrl: "",
-  coverLetterUrl: "",
 };
 
 const STATUS_OPTIONS: CareerApplicationStatus[] = ["PENDING", "REVIEWED", "REJECTED", "HIRED"];
@@ -45,6 +41,8 @@ export default function CareersPage() {
 
   const [createOpen, setCreateOpen] = useState(false);
   const [form, setForm] = useState<CareerFormState>(emptyForm);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [coverLetterFile, setCoverLetterFile] = useState<File | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -64,6 +62,8 @@ export default function CareersPage() {
 
   function openCreateModal() {
     setForm(emptyForm);
+    setResumeFile(null);
+    setCoverLetterFile(null);
     setFormError(null);
     setCreateOpen(true);
   }
@@ -71,13 +71,20 @@ export default function CareersPage() {
   async function handleCreateSubmit(e: FormEvent) {
     e.preventDefault();
     setFormError(null);
+    if (!resumeFile || !coverLetterFile) {
+      setFormError("Resume and cover letter files are required");
+      return;
+    }
     setSubmitting(true);
     try {
-      const res = await fetch("/api/careers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const body = new FormData();
+      for (const [key, value] of Object.entries(form)) {
+        body.append(key, value);
+      }
+      body.append("resume", resumeFile);
+      body.append("coverLetter", coverLetterFile);
+
+      const res = await fetch("/api/careers", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {
         setFormError(data.error ?? "Something went wrong");
@@ -236,66 +243,73 @@ export default function CareersPage() {
             />
           </FormField>
           <div className="grid grid-cols-2 gap-3">
-            <FormField label="City" htmlFor="city">
+            <FormField label="City" htmlFor="city" required>
               <TextInput
                 id="city"
+                required
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
                 data-testid="form-city"
               />
             </FormField>
-            <FormField label="Country" htmlFor="country">
+            <FormField label="Country" htmlFor="country" required>
               <TextInput
                 id="country"
+                required
                 value={form.country}
                 onChange={(e) => setForm({ ...form, country: e.target.value })}
                 data-testid="form-country"
               />
             </FormField>
           </div>
-          <FormField label="Address" htmlFor="address">
+          <FormField label="Address" htmlFor="address" required>
             <TextInput
               id="address"
+              required
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
               data-testid="form-address"
             />
           </FormField>
           <div className="grid grid-cols-2 gap-3">
-            <FormField label="Expected Salary" htmlFor="expectedSalary">
+            <FormField label="Expected Salary" htmlFor="expectedSalary" required>
               <TextInput
                 id="expectedSalary"
+                required
                 value={form.expectedSalary}
                 onChange={(e) => setForm({ ...form, expectedSalary: e.target.value })}
                 data-testid="form-expectedSalary"
               />
             </FormField>
-            <FormField label="Start Date" htmlFor="startDate">
+            <FormField label="Start Date" htmlFor="startDate" required>
               <TextInput
                 id="startDate"
                 type="date"
+                required
                 value={form.startDate}
                 onChange={(e) => setForm({ ...form, startDate: e.target.value })}
                 data-testid="form-startDate"
               />
             </FormField>
           </div>
-          <FormField label="Resume URL" htmlFor="resumeUrl">
-            <TextInput
-              id="resumeUrl"
-              value={form.resumeUrl}
-              onChange={(e) => setForm({ ...form, resumeUrl: e.target.value })}
-              data-testid="form-resumeUrl"
-              placeholder="https://..."
+          <FormField label="Resume" htmlFor="resume" required>
+            <input
+              id="resume"
+              type="file"
+              required
+              onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
+              data-testid="form-resume"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-ink outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </FormField>
-          <FormField label="Cover Letter URL" htmlFor="coverLetterUrl">
-            <TextInput
-              id="coverLetterUrl"
-              value={form.coverLetterUrl}
-              onChange={(e) => setForm({ ...form, coverLetterUrl: e.target.value })}
-              data-testid="form-coverLetterUrl"
-              placeholder="https://..."
+          <FormField label="Cover Letter" htmlFor="coverLetter" required>
+            <input
+              id="coverLetter"
+              type="file"
+              required
+              onChange={(e) => setCoverLetterFile(e.target.files?.[0] ?? null)}
+              data-testid="form-coverLetter"
+              className="w-full rounded-md border border-border bg-white px-3 py-2 text-sm text-ink outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </FormField>
           {formError && (

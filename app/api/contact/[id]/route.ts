@@ -1,40 +1,24 @@
-import { NextResponse } from "next/server";
-import { ContactMessagesStore } from "@/lib/mock-data";
-import { pickDefined } from "@/lib/api-utils";
+import { backendFetch, proxyResponse } from "@/lib/backend";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-export async function GET(_request: Request, { params }: RouteParams) {
+export async function GET(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const message = ContactMessagesStore.get(id);
-  if (!message) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(message);
+  const backendRes = await backendFetch(request, `/contact/${id}`);
+  return proxyResponse(backendRes);
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const body = await request.json().catch(() => null);
-  if (!body) return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-
-  const patch = pickDefined({
-    name: body.name,
-    email: body.email,
-    phone: body.phone,
-    service: body.service,
-    program: body.program,
-    message: body.message,
-    status: body.status,
-  });
-  const updated = ContactMessagesStore.update(id, patch);
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(updated);
+  const body = await request.text();
+  const backendRes = await backendFetch(request, `/contact/${id}`, { method: "PATCH", body });
+  return proxyResponse(backendRes);
 }
 
-export async function DELETE(_request: Request, { params }: RouteParams) {
+export async function DELETE(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const removed = ContactMessagesStore.remove(id);
-  if (!removed) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ ok: true });
+  const backendRes = await backendFetch(request, `/contact/${id}`, { method: "DELETE" });
+  return proxyResponse(backendRes);
 }

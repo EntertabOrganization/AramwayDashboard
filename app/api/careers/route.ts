@@ -1,35 +1,16 @@
-import { NextResponse } from "next/server";
-import { CareerApplicationsStore } from "@/lib/mock-data";
+import { backendFetch, listQueryString, proxyListResponse, proxyResponse } from "@/lib/backend";
 
-export async function GET() {
-  return NextResponse.json(CareerApplicationsStore.list());
+export async function GET(request: Request) {
+  const backendRes = await backendFetch(request, `/careers${listQueryString(request)}`);
+  return proxyListResponse(backendRes);
 }
 
-// This is a mock: it accepts plain JSON (including resumeUrl/coverLetterUrl
-// as plain strings) rather than multipart file uploads.
+// The real backend's create endpoint is public (used by the marketing site's
+// application form) and requires multipart/form-data with actual resume +
+// cover letter files, so the admin "New Application" form builds a FormData
+// with real File objects and we forward it as-is.
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => null);
-  const required = ["firstName", "lastName", "email", "phone", "position"];
-  const missing = required.filter((field) => !body?.[field]);
-  if (!body || missing.length > 0) {
-    return NextResponse.json({ error: `Missing required fields: ${missing.join(", ")}` }, { status: 400 });
-  }
-
-  const application = CareerApplicationsStore.create({
-    firstName: body.firstName,
-    lastName: body.lastName,
-    email: body.email,
-    phone: body.phone,
-    address: body.address || "",
-    city: body.city || "",
-    country: body.country || "",
-    expectedSalary: body.expectedSalary || "",
-    position: body.position,
-    startDate: body.startDate || "",
-    resumeUrl: body.resumeUrl || "",
-    coverLetterUrl: body.coverLetterUrl || "",
-    status: body.status,
-  });
-
-  return NextResponse.json(application, { status: 201 });
+  const formData = await request.formData();
+  const backendRes = await backendFetch(request, "/careers", { method: "POST", body: formData });
+  return proxyResponse(backendRes);
 }

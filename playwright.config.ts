@@ -26,7 +26,10 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     env: {
-      JWT_SECRET: "dev-only-change-me-aramway-dashboard-secret",
+      JWT_SECRET:
+        process.env.JWT_SECRET ??
+        "765c55317b9b939be0cbad6df30cd1080c9bef508b12af00d2f06dfc0fb02ff98356b1ad90eaf95bc01334e505a06007",
+      BACKEND_URL: process.env.BACKEND_URL ?? "http://localhost:4000",
       PORT: String(PORT),
     },
   },

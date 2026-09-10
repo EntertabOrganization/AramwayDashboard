@@ -26,6 +26,19 @@ test.describe("Career Applications", () => {
     await page.getByTestId("form-position").fill("QA Engineer");
     await page.getByTestId("form-city").fill("Remote");
     await page.getByTestId("form-country").fill("Testland");
+    await page.getByTestId("form-address").fill("1 Test Street");
+    await page.getByTestId("form-expectedSalary").fill("USD 1,000 / month");
+    await page.getByTestId("form-startDate").fill("2026-06-01");
+    await page.getByTestId("form-resume").setInputFiles({
+      name: "resume.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("e2e test resume"),
+    });
+    await page.getByTestId("form-coverLetter").setInputFiles({
+      name: "cover-letter.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("e2e test cover letter"),
+    });
     await page.getByTestId("form-submit").click();
     await expect(page.getByTestId("career-create-modal")).not.toBeVisible();
 

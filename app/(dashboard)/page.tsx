@@ -1,52 +1,88 @@
 import Link from "next/link";
-import {
-  SubscribersStore,
-  BlogCategoriesStore,
-  BlogsStore,
-  CareerApplicationsStore,
-  ContactMessagesStore,
-  ConsultationsStore,
-} from "@/lib/mock-data";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE_NAME } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-export default function OverviewPage() {
+const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:4000";
+
+async function fetchTotal(path: string, cookieHeader: string): Promise<number> {
+  const res = await fetch(`${BACKEND_URL}/api${path}`, {
+    headers: cookieHeader ? { cookie: cookieHeader } : {},
+    cache: "no-store",
+  });
+  if (!res.ok) return 0;
+  const json = await res.json();
+  return json?.meta?.total ?? 0;
+}
+
+export default async function OverviewPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+  const cookieHeader = token ? `${AUTH_COOKIE_NAME}=${token}` : "";
+
+  const [
+    subscribersTotal,
+    subscribersActive,
+    blogCategoriesTotal,
+    blogsTotal,
+    blogsPublished,
+    careersTotal,
+    careersPending,
+    contactTotal,
+    contactNew,
+    consultationsTotal,
+    consultationsPending,
+  ] = await Promise.all([
+    fetchTotal("/subscribers?limit=1", cookieHeader),
+    fetchTotal("/subscribers?limit=1&status=ACTIVE", cookieHeader),
+    fetchTotal("/blog-categories?limit=1", cookieHeader),
+    fetchTotal("/blogs?limit=1", cookieHeader),
+    fetchTotal("/blogs?limit=1&status=PUBLISHED", cookieHeader),
+    fetchTotal("/careers?limit=1", cookieHeader),
+    fetchTotal("/careers?limit=1&status=PENDING", cookieHeader),
+    fetchTotal("/contact?limit=1", cookieHeader),
+    fetchTotal("/contact?limit=1&status=NEW", cookieHeader),
+    fetchTotal("/consultations?limit=1", cookieHeader),
+    fetchTotal("/consultations?limit=1&status=PENDING", cookieHeader),
+  ]);
+
   const cards = [
     {
       label: "Subscribers",
-      count: SubscribersStore.list().length,
+      count: subscribersTotal,
       href: "/subscribers",
-      hint: `${SubscribersStore.list().filter((s) => s.status === "ACTIVE").length} active`,
+      hint: `${subscribersActive} active`,
     },
     {
       label: "Blog Categories",
-      count: BlogCategoriesStore.list().length,
+      count: blogCategoriesTotal,
       href: "/blog-categories",
       hint: "categories",
     },
     {
       label: "Blogs & News",
-      count: BlogsStore.list().length,
+      count: blogsTotal,
       href: "/blogs",
-      hint: `${BlogsStore.list().filter((b) => b.status === "PUBLISHED").length} published`,
+      hint: `${blogsPublished} published`,
     },
     {
       label: "Career Applications",
-      count: CareerApplicationsStore.list().length,
+      count: careersTotal,
       href: "/careers",
-      hint: `${CareerApplicationsStore.list().filter((c) => c.status === "PENDING").length} pending`,
+      hint: `${careersPending} pending`,
     },
     {
       label: "Contact Messages",
-      count: ContactMessagesStore.list().length,
+      count: contactTotal,
       href: "/contact",
-      hint: `${ContactMessagesStore.list().filter((c) => c.status === "NEW").length} new`,
+      hint: `${contactNew} new`,
     },
     {
       label: "Consultations",
-      count: ConsultationsStore.list().length,
+      count: consultationsTotal,
       href: "/consultations",
-      hint: `${ConsultationsStore.list().filter((c) => c.status === "PENDING").length} pending`,
+      hint: `${consultationsPending} pending`,
     },
   ];
 
@@ -54,9 +90,7 @@ export default function OverviewPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-ink">Overview</h1>
-        <p className="mt-1 text-sm text-muted">
-          Snapshot of Aramway site content. All data below is in-memory mock data for this dashboard.
-        </p>
+        <p className="mt-1 text-sm text-muted">Snapshot of Aramway site content, live from AramwayBackend.</p>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="overview-cards">
         {cards.map((card) => (
