@@ -7,6 +7,9 @@ import Modal from "@/components/Modal";
 import { FormField, TextInput, TextArea, Select } from "@/components/FormField";
 import type { Consultation, ConsultationStatus } from "@/lib/mock-data";
 
+// Every consultation always invites the requester plus this fixed address.
+const CONSTANT_INVITE_EMAIL = "felmola13@gmail.com";
+
 interface ConsultationFormState {
   name: string;
   company: string;
@@ -325,6 +328,23 @@ export default function ConsultationsPage() {
             <DetailRow label="Service" value={detail.service ?? "—"} />
             <DetailRow label="Date" value={new Date(detail.date).toLocaleDateString()} />
             <DetailRow label="Time" value={detail.time} />
+            <div className="flex items-start justify-between gap-4 border-b border-border pb-2 last:border-0">
+              <span className="font-medium text-muted">Google Meet</span>
+              <div className="text-right">
+                <a
+                  href={detail.meetLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-testid="detail-meet-link"
+                  className="text-primary underline break-all"
+                >
+                  {detail.meetLink}
+                </a>
+                <p className="mt-1 text-xs text-muted">
+                  Invite: {detail.email}, {CONSTANT_INVITE_EMAIL}
+                </p>
+              </div>
+            </div>
             {detail.notes && (
               <div className="border-b border-border pb-2">
                 <span className="font-medium text-muted">Notes</span>

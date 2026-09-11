@@ -97,6 +97,7 @@ export interface Consultation {
   notes?: string;
   date: string;
   time: string;
+  meetLink: string;
   status: ConsultationStatus;
   createdAt: string;
   updatedAt: string;
