@@ -164,7 +164,7 @@ export default function ConsultationsPage() {
                 <tr key={c.id} data-testid={`row-${c.id}`} className="border-b border-border last:border-0">
                   <td className="px-4 py-3 font-medium text-ink">{c.name}</td>
                   <td className="px-4 py-3 text-muted">{c.company ?? "—"}</td>
-                  <td className="px-4 py-3 text-muted">{c.date}</td>
+                  <td className="px-4 py-3 text-muted">{new Date(c.date).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-muted">{c.time}</td>
                   <td className="px-4 py-3">
                     <Badge value={c.status} />
@@ -323,7 +323,7 @@ export default function ConsultationsPage() {
             <DetailRow label="Phone" value={detail.phone} />
             <DetailRow label="Country" value={detail.country} />
             <DetailRow label="Service" value={detail.service ?? "—"} />
-            <DetailRow label="Date" value={detail.date} />
+            <DetailRow label="Date" value={new Date(detail.date).toLocaleDateString()} />
             <DetailRow label="Time" value={detail.time} />
             {detail.notes && (
               <div className="border-b border-border pb-2">

@@ -359,7 +359,7 @@ export default function CareersPage() {
             <DetailRow label="City" value={detail.city} />
             <DetailRow label="Country" value={detail.country} />
             <DetailRow label="Expected Salary" value={detail.expectedSalary} />
-            <DetailRow label="Start Date" value={detail.startDate} />
+            <DetailRow label="Start Date" value={new Date(detail.startDate).toLocaleDateString()} />
             <DetailRow label="Resume" value={detail.resumeUrl} />
             <DetailRow label="Cover Letter" value={detail.coverLetterUrl} />
             <DetailRow label="Applied" value={new Date(detail.createdAt).toLocaleString()} />

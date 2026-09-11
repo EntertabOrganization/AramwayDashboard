@@ -4,21 +4,23 @@ Internal admin dashboard for managing Aramway site content (subscribers, blog
 categories, blogs/news, career applications, contact messages, and
 consultations).
 
-## Important: this is a self-contained mock
+## Wired to AramwayBackend
 
-This dashboard is **intentionally not connected to AramwayBackend** (the real
-Express + Prisma + Postgres API being built separately). Instead, its own
-Next.js API routes (`app/api/**`) act as a fake backend over **in-memory
-data** defined in `lib/mock-data.ts`.
+This dashboard proxies to the real AramwayBackend (Express + Prisma +
+Postgres) — every `app/api/**` route handler forwards to
+`${BACKEND_URL}/api/**` (see `lib/backend.ts`), forwarding the admin's
+session cookie both ways. AramwayBackend must be running (`npm run dev` in
+`../AramwayBackend`, default `http://localhost:4000`) for this dashboard to
+work.
 
-- All data lives in module-level arrays and **resets whenever the dev/prod
-  server restarts**. That's expected — this is a demo/mockup, not a
-  production data store.
-- The field shapes of every resource (`Subscriber`, `BlogCategory`, `Blog`,
-  `CareerApplication`, `ContactMessage`, `Consultation`) mirror the real
-  backend's data model exactly, so wiring this dashboard up to the real
-  AramwayBackend later should be a drop-in swap of the `lib/mock-data.ts`
-  store functions for real HTTP calls.
+- `JWT_SECRET` here **must match** AramwayBackend's `JWT_SECRET` exactly —
+  the backend issues the session JWT on login, and this app's
+  `middleware.ts` verifies it on every request.
+- `BACKEND_URL` (default `http://localhost:4000`) points at the backend API.
+- `lib/mock-data.ts` now only holds the shared TypeScript types (mirroring
+  AramwayBackend's Prisma schema) that page components import; the
+  in-memory store it used to contain has been removed now that the real
+  backend is wired up.
 
 ## Stack
 
@@ -71,11 +73,13 @@ npx playwright install --with-deps chromium   # first time only
 npx playwright test
 ```
 
-`playwright.config.ts` starts the dev server for you (`npm run dev`) and
-points the tests at `http://localhost:3000`. Tests run serially (single
-worker) since all specs share the same in-memory mock data on the server —
-running them in parallel would let tests race and stomp on each other's
-rows.
+`playwright.config.ts` starts the dashboard's dev server for you (`npm run
+dev`) and points the tests at `http://localhost:3000` — but **AramwayBackend
+must already be running separately** (`npm run dev` in `../AramwayBackend`,
+with its database migrated and seeded; see that repo's README) since these
+tests exercise the real API end to end. Tests run serially (single worker)
+since specs share the same backend database — running them in parallel
+would let tests race and stomp on each other's rows.
 
 Test coverage:
 
