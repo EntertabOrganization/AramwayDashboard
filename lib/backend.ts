@@ -22,8 +22,16 @@ export function listQueryString(request: Request, defaultLimit = 1000): string {
   return `?${url.searchParams.toString()}`;
 }
 
-/** Calls `${BACKEND_URL}/api${path}`, forwarding the incoming request's cookies. */
-export function backendFetch(request: Request, path: string, init: RequestInit = {}): Promise<Response> {
+/**
+ * Calls `${BACKEND_URL}/api${path}`, forwarding the incoming request's
+ * cookies. Never throws: if the backend itself is unreachable (down, wrong
+ * BACKEND_URL, network error), `fetch` rejects rather than resolving with a
+ * Response, which would otherwise bubble up as an uncaught exception and
+ * leave Next.js to return an empty 500 body — and every caller here expects
+ * a Response it can call `.json()` on. Callers just see it as a normal
+ * (if unsuccessful) backend response.
+ */
+export async function backendFetch(request: Request, path: string, init: RequestInit = {}): Promise<Response> {
   const headers = new Headers(init.headers);
   const cookie = request.headers.get("cookie");
   if (cookie) headers.set("cookie", cookie);
@@ -31,11 +39,15 @@ export function backendFetch(request: Request, path: string, init: RequestInit =
     headers.set("content-type", "application/json");
   }
 
-  return fetch(`${BACKEND_URL}/api${path}`, {
-    ...init,
-    headers,
-    cache: "no-store",
-  });
+  try {
+    return await fetch(`${BACKEND_URL}/api${path}`, {
+      ...init,
+      headers,
+      cache: "no-store",
+    });
+  } catch {
+    return Response.json({ error: "Could not reach the backend. Is it running?" }, { status: 502 });
+  }
 }
 
 /** Turns a backend Response into a NextResponse, forwarding status/body/Set-Cookie. */

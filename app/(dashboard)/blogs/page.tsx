@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import Badge from "@/components/Badge";
 import Modal from "@/components/Modal";
 import { FormField, TextInput, TextArea, Select } from "@/components/FormField";
+import { RichTextEditor } from "@/components/RichTextEditor";
 import type { Blog, BlogCategory, BlogStatus, BlogType } from "@/lib/mock-data";
 
 interface BlogFormState {
@@ -319,15 +320,12 @@ export default function BlogsPage() {
               data-testid="form-excerpt"
             />
           </FormField>
-          <FormField label="Content" htmlFor="content">
-            <TextArea
-              id="content"
-              rows={4}
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              data-testid="form-content"
-            />
-          </FormField>
+          <RichTextEditor
+            label="Content"
+            value={form.content}
+            onChange={(content) => setForm((f) => ({ ...f, content }))}
+            testId="form-content"
+          />
           <FormField label="Cover Image URL" htmlFor="coverImage">
             <TextInput
               id="coverImage"
