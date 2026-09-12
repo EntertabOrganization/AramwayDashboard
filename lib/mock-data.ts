@@ -102,3 +102,9 @@ export interface Consultation {
   createdAt: string;
   updatedAt: string;
 }
+
+/** One row per day of week (0 = Sunday .. 6 = Saturday); empty timeSlots means unavailable that day. */
+export interface DayAvailability {
+  dayOfWeek: number;
+  timeSlots: string[];
+}

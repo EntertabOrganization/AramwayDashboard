@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact Messages" },
   { href: "/consultations", label: "Consultations" },
+  { href: "/availability", label: "Availability" },
 ];
 
 export default function Sidebar() {
