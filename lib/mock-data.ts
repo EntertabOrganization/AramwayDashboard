@@ -92,7 +92,6 @@ export interface Consultation {
   company?: string;
   email: string;
   phone: string;
-  country: string;
   service?: string;
   notes?: string;
   date: string;

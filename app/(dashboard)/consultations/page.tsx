@@ -15,7 +15,6 @@ interface ConsultationFormState {
   company: string;
   email: string;
   phone: string;
-  country: string;
   service: string;
   notes: string;
   date: string;
@@ -27,7 +26,6 @@ const emptyForm: ConsultationFormState = {
   company: "",
   email: "",
   phone: "",
-  country: "",
   service: "",
   notes: "",
   date: "",
@@ -75,7 +73,6 @@ export default function ConsultationsPage() {
         company: form.company || undefined,
         email: form.email,
         phone: form.phone,
-        country: form.country,
         service: form.service || undefined,
         notes: form.notes || undefined,
         date: form.date,
@@ -222,26 +219,15 @@ export default function ConsultationsPage() {
               data-testid="form-email"
             />
           </FormField>
-          <div className="grid grid-cols-2 gap-3">
-            <FormField label="Phone" htmlFor="phone" required>
-              <TextInput
-                id="phone"
-                required
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                data-testid="form-phone"
-              />
-            </FormField>
-            <FormField label="Country" htmlFor="country" required>
-              <TextInput
-                id="country"
-                required
-                value={form.country}
-                onChange={(e) => setForm({ ...form, country: e.target.value })}
-                data-testid="form-country"
-              />
-            </FormField>
-          </div>
+          <FormField label="Phone" htmlFor="phone" required>
+            <TextInput
+              id="phone"
+              required
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              data-testid="form-phone"
+            />
+          </FormField>
           <FormField label="Service" htmlFor="service">
             <TextInput
               id="service"
@@ -324,7 +310,6 @@ export default function ConsultationsPage() {
             <DetailRow label="Company" value={detail.company ?? "—"} />
             <DetailRow label="Email" value={detail.email} />
             <DetailRow label="Phone" value={detail.phone} />
-            <DetailRow label="Country" value={detail.country} />
             <DetailRow label="Service" value={detail.service ?? "—"} />
             <DetailRow label="Date" value={new Date(detail.date).toLocaleDateString()} />
             <DetailRow label="Time" value={detail.time} />

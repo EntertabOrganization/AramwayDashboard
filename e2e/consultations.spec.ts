@@ -22,7 +22,6 @@ test.describe("Consultations", () => {
     await page.getByTestId("form-name").fill(name);
     await page.getByTestId("form-email").fill("e2e.consultation@example.com");
     await page.getByTestId("form-phone").fill("+1-555-222-3333");
-    await page.getByTestId("form-country").fill("Testland");
     await page.getByTestId("form-date").fill("2026-04-01");
     await page.getByTestId("form-time").fill("11:00");
     await page.getByTestId("form-submit").click();
