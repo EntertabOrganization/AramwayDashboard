@@ -110,7 +110,7 @@ export default function AvailabilityPage() {
           <h1 className="text-2xl font-semibold text-ink">Availability</h1>
           <p className="mt-1 text-sm text-muted">
             For each day, set one or more time ranges you&apos;re available (e.g. 9:00 AM–12:00 PM
-            and 2:00 PM–5:00 PM). This is exactly what visitors see on Aramway&apos;s booking
+            and 2:00 PM–5:00 PM). This is exactly what visitors see on ARAMWAY GROUP&apos;s booking
             calendar — bookings are offered on the hour within each range.
           </p>
         </div>

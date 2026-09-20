@@ -38,7 +38,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-cream px-4">
       <div className="w-full max-w-sm rounded-lg border border-border bg-white p-8 shadow-sm">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-primary">Aramway</h1>
+          <h1 className="text-2xl font-bold text-primary">ARAMWAY GROUP</h1>
           <p className="mt-1 text-sm text-muted">Admin Dashboard</p>
         </div>
         <form onSubmit={handleSubmit} data-testid="login-form">

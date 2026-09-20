@@ -20,7 +20,7 @@ export default function DashboardHeader() {
 
   return (
     <header className="flex items-center justify-between border-b border-border bg-white px-6 py-4">
-      <span className="text-sm font-medium text-muted">Aramway Admin Dashboard</span>
+      <span className="text-sm font-medium text-muted">ARAMWAY GROUP Admin Dashboard</span>
       <Button
         type="button"
         variant="outline"

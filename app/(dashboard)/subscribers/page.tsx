@@ -78,7 +78,7 @@ export default function SubscribersPage() {
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-ink">Subscribers</h1>
-          <p className="mt-1 text-sm text-muted">Newsletter subscribers for the Aramway site.</p>
+          <p className="mt-1 text-sm text-muted">Newsletter subscribers for the ARAMWAY GROUP site.</p>
         </div>
         <Button onClick={openCreateModal} data-testid="new-subscriber-btn">
           + New Subscriber

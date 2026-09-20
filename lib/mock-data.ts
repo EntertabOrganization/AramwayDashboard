@@ -108,3 +108,12 @@ export interface DayAvailability {
   dayOfWeek: number;
   timeSlots: string[];
 }
+
+/** A user with login access to this dashboard. */
+export interface Admin {
+  id: string;
+  email: string;
+  name?: string;
+  createdAt: string;
+  updatedAt: string;
+}

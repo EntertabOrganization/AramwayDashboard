@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/contact", label: "Contact Messages" },
   { href: "/consultations", label: "Consultations" },
   { href: "/availability", label: "Availability" },
+  { href: "/users", label: "Users" },
 ];
 
 export default function Sidebar() {
@@ -21,7 +22,7 @@ export default function Sidebar() {
     <aside className="flex h-full w-60 shrink-0 flex-col border-r border-border bg-white">
       <div className="flex items-center gap-2 border-b border-border px-5 py-5">
         <span className="text-lg font-bold text-primary" style={{ fontFamily: "var(--font-heading)" }}>
-          Aramway
+          ARAMWAY GROUP
         </span>
         <span className="text-xs font-medium text-muted">Admin</span>
       </div>

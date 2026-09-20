@@ -16,10 +16,10 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: {
-    default: "Aramway Admin Dashboard",
-    template: "%s | Aramway Admin",
+    default: "ARAMWAY GROUP Admin Dashboard",
+    template: "%s | ARAMWAY GROUP Admin",
   },
-  description: "Internal admin dashboard for managing Aramway site content (mock data).",
+  description: "Internal admin dashboard for managing ARAMWAY GROUP site content (mock data).",
 };
 
 export default function RootLayout({

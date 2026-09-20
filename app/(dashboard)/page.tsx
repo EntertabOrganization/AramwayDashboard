@@ -90,7 +90,7 @@ export default async function OverviewPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-ink">Overview</h1>
-        <p className="mt-1 text-sm text-muted">Snapshot of Aramway site content, live from AramwayBackend.</p>
+        <p className="mt-1 text-sm text-muted">Snapshot of ARAMWAY GROUP site content, live from AramwayBackend.</p>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="overview-cards">
         {cards.map((card) => (
